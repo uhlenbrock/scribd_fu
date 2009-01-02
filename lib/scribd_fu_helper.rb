@@ -31,9 +31,13 @@ module ScribdFuHelper
       scribd_ak = object.send "#{alt_text_or_attribute}_scribd_access_key"
       alt_text = alt_text_if_paperclip
     end
-
-    params = options[:params].collect { |k,v| "scribd_doc.addParam('#{k}','#{v}');" if ScribdJSParams.include?(k) }.compact.join("\n")
-
+    
+    # Collect a set of addParam statements to set up JS parameters for the scribd document
+    # (only if they are valid).
+    param_includes = options[:params].collect do |param, value|
+      "scribd_doc.addParam('#{param}', '#{value}');" if AVAILABLE_JS_PARAMS.include?(param)
+    end.compact.join("\n")
+    
     <<-END
       <div id=\"embedded_flash\">#{alt_text}</div>
       <script type=\"text/javascript\">
