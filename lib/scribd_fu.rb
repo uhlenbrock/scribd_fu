@@ -11,8 +11,10 @@ module ScribdFu
                    'text/plain', 'application/rtf',
                    'application/vnd.oasis.opendocument.text',
                    'application/vnd.oasis.opendocument.presentation',
+                   'application/vnd.oasis.opendocument.spreadsheet',
                    'application/vnd.sun.xml.writer',
                    'application/vnd.sun.xml.impress',
+                   'application/vnd.sun.xml.calc',
     # OOXML, AKA `the MIME types from hell'. Seriously, these are long enough to
     # start their own dictionary...
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -34,7 +36,7 @@ module ScribdFu
     end
 
     # Marks the given +attribute+ as a scribdable document file. If +attribute+
-    # is nil, assumes this is an +attachment_fu+ model and deals with the setup
+    # is nil, assumes this is an Attachment_fu model and deals with the setup
     # accordingly; otherwise, assumes a +paperclip+ model and sets up scribding
     # related to the particular given attribute.
     def has_scribdable_attachment(attribute = nil)
@@ -81,6 +83,17 @@ module ScribdFu
         exit
       end
     end
+
+    def access_level
+      if self.respond_to?(:is_public) && self.is_public != nil
+        scribd_access = self.is_public ? 'public' : 'private'
+      else
+        scribd_access = scribd_config['access']
+      end
+
+      scribd_access
+    end
+    
   end
 
   module ClassMethods
