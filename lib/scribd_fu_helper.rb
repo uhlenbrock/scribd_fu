@@ -2,7 +2,7 @@ module ScribdFuHelper
   
   # Available parameters for the JS API
   # http://www.scribd.com/publisher/api/api?method_name=Javascript+API
-  ScribdJSParams = [ :height, :width, :page, :my_user_id, :search_query, :jsapi_version, :disable_related_docs, :mode, :auto_size ]
+  AVAILABLE_JS_PARAMS = [ :height, :width, :page, :my_user_id, :search_query, :jsapi_version, :disable_related_docs, :mode, :auto_size ]
   
   # Displays the scribd object for the attachment on the given +object+. If
   # +alt_text_or_attribute+ is given, then it will be used as the alternate text
@@ -20,23 +20,25 @@ module ScribdFuHelper
   # Using Paperclip:
   #  <%= display_scribd user, :biography %>
   #  <%= display_scribd user, :biography, 'You need Flash for biographies." %>
-  def display_scribd(object, alt_text_or_attribute = '', alt_text_if_paperclip = nil)
+  def display_scribd(object, options = {})
     # Resolve the right scribd ID, access key, and alt text.
     if object.respond_to?("scribd_id")
       scribd_id = object.scribd_id
       scribd_ak = object.scribd_access_key
-      alt_text = alt_text_or_attribute
+      alt_text = object.alt_text
     else
-      scribd_id = object.send "#{alt_text_or_attribute}_scribd_id"
-      scribd_ak = object.send "#{alt_text_or_attribute}_scribd_access_key"
-      alt_text = alt_text_if_paperclip
+      scribd_id = object.send "#{options[:object]}_scribd_id"
+      scribd_ak = object.send "#{options[:object]}_scribd_access_key"
+      alt_text = object.send "#{options[:object]}_scribd_alt_text"
     end
     
     # Collect a set of addParam statements to set up JS parameters for the scribd document
     # (only if they are valid).
-    param_includes = options[:params].collect do |param, value|
-      "scribd_doc.addParam('#{param}', '#{value}');" if AVAILABLE_JS_PARAMS.include?(param)
-    end.compact.join("\n")
+    if options[:params]
+      params = options[:params].collect do |param, value|
+        "scribd_doc.addParam('#{param}', '#{value}');" if AVAILABLE_JS_PARAMS.include?(param)
+      end.compact.join("\n")
+    end
     
     <<-END
       <div id=\"embedded_flash\">#{alt_text}</div>
