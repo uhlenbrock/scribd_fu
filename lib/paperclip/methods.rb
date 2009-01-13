@@ -108,6 +108,20 @@ module ScribdFu
         end
       end
 
+      # Returns the text version of the specified +attribute+ attachment.
+      #
+      # This call should only happen once, with subsequent requests just returning the db value.
+      def alt_text(attribute)
+        if self["#{attribute}_scribd_alt_text"].blank?
+          doc = scribd_document_for(attribute)
+          alt_text = open(doc.download_url('txt')).read || 'not available'
+          self.update_attribute("#{attribute}_scribd_alt_text", alt_text)
+        end
+        self["#{attribute}_scribd_alt_text"]
+      rescue Errno::ENOENT, NoMethodError # file not found
+        nil
+      end
+
       # Returns a URL for a thumbnail for the specified +attribute+ attachment.
       #
       # If Scribd does not provide a thumbnail URL, then Paperclip's thumbnail
