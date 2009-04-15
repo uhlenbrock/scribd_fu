@@ -73,7 +73,7 @@ module ScribdFu
       def alt_text
         if self.scribd_alt_text.blank?
           doc = scribd_document_for(attribute)
-          alt_text = open(doc.download_url('txt')).read || 'not available'
+          alt_text = open(doc.download_url('txt')).read
           self.update_attribute(:scribd_alt_text, alt_text)
         end
         self.scribd_alt_text

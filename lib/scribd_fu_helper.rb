@@ -29,7 +29,7 @@ module ScribdFuHelper
     else
       scribd_id = object.send "#{options[:object]}_scribd_id"
       scribd_ak = object.send "#{options[:object]}_scribd_access_key"
-      alt_text = object.send "#{options[:object]}_scribd_alt_text"
+      alt_text = object.alt_text options[:object]
     end
     
     # Collect a set of addParam statements to set up JS parameters for the scribd document
