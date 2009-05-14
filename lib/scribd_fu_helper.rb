@@ -2,7 +2,7 @@ module ScribdFuHelper
   
   # Available parameters for the JS API
   # http://www.scribd.com/publisher/api/api?method_name=Javascript+API
-  AVAILABLE_JS_PARAMS = [ :height, :width, :page, :my_user_id, :search_query, :jsapi_version, :disable_related_docs, :mode, :auto_size ]
+  AVAILABLE_JS_PARAMS = [ :height, :width, :page, :my_user_id, :search_query, :search_keywords, :jsapi_version, :disable_related_docs, :mode, :auto_size ]
   
   # Displays the scribd object for the attachment on the given +object+. If
   # +alt_text_or_attribute+ is given, then it will be used as the alternate text
